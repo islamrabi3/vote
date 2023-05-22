@@ -91,13 +91,8 @@ class LoginScreen extends StatelessWidget {
                           : defaultButton(
                               function: () async {
                                 if (formKey.currentState!.validate()) {
-                                  cubit
-                                      .login(emailController.text,
-                                          passwordController.text)
-                                      .then((value) {
-                                    navigateAndRemove(
-                                        context, const HomeLayout());
-                                  });
+                                  cubit.login(emailController.text,
+                                      passwordController.text, context);
                                 } else {
                                   print('There is An Error !!');
                                 }

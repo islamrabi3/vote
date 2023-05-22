@@ -123,18 +123,13 @@ class RegisterScreen extends StatelessWidget {
                         : defaultButton(
                             function: () async {
                               if (formKey.currentState!.validate()) {
-                                cubit
-                                    .createNewUser(
-                                        email: emailController.text,
-                                        name: nameController.text,
-                                        password: passwordController.text,
-                                        phoneNumber: phoneController.text)
-                                    .then((value) {
-                                  navigatetTo(
-                                      context, const IdentificationScreen());
-                                  Fluttertoast.showToast(
-                                      msg: 'Registerd Successfully');
-                                });
+                                cubit.createNewUser(
+                                  ctx: context,
+                                  email: emailController.text,
+                                  name: nameController.text,
+                                  password: passwordController.text,
+                                  phoneNumber: phoneController.text,
+                                );
                               } else {
                                 print('There is An Error !!');
                               }

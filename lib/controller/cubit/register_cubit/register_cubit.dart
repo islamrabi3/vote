@@ -6,11 +6,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:voting_app/core/global.dart';
 import 'package:voting_app/core/services/firebase_services.dart';
 import 'package:voting_app/model/user_model.dart';
+import 'package:voting_app/screens/identification_screen.dart';
 
 part 'register_state.dart';
 
@@ -25,7 +27,8 @@ class RegisterCubit extends Cubit<RegisterState> {
       {String? name,
       String? email,
       String? password,
-      String? phoneNumber}) async {
+      String? phoneNumber,
+      BuildContext? ctx}) async {
     try {
       emit(ResgisterLoadingState());
 
@@ -52,11 +55,13 @@ class RegisterCubit extends Cubit<RegisterState> {
               data: userModel!.toMap())
           .then((value) {
         print('data has been added');
+      }).then((value) {
+        navigateAndRemove(ctx, const IdentificationScreen());
       });
-
+      Fluttertoast.showToast(msg: 'Registerd Successfully');
       emit(RegisterSuccessState());
     } on FirebaseAuthException catch (e) {
-      print(e.toString());
+      Fluttertoast.showToast(msg: e.toString());
       emit(RegisterErrotState());
     }
   }
