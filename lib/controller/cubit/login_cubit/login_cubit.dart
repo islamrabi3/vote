@@ -20,7 +20,6 @@ class LoginCubit extends Cubit<LoginState> {
       String email, String password, BuildContext context) async {
     try {
       emit(LoginLoadingState());
-
       FirebaseServicesHelper.login(email: email, password: password)
           .then((value) async {
         uid = value.user!.uid;
@@ -28,9 +27,8 @@ class LoginCubit extends Cubit<LoginState> {
         prefs.setString('token', uid);
         // ignore: use_build_context_synchronously
         navigateAndRemove(context, const HomeLayout());
+        emit(LoginSuccessState());
       });
-
-      emit(LoginSuccessState());
     } on FirebaseAuthException catch (e) {
       Fluttertoast.showToast(msg: e.toString());
       emit(LoginErrotState());
