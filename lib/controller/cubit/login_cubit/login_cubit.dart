@@ -20,18 +20,36 @@ class LoginCubit extends Cubit<LoginState> {
       String email, String password, BuildContext context) async {
     try {
       emit(LoginLoadingState());
-      FirebaseServicesHelper.login(email: email, password: password)
-          .then((value) async {
-        uid = value.user!.uid;
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setString('token', uid);
-        // ignore: use_build_context_synchronously
-        navigateAndRemove(context, const HomeLayout());
-        emit(LoginSuccessState());
-      });
+      final credential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+      uid = credential.user!.uid;
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('token', uid);
+      navigateAndRemove(context, const HomeLayout());
+      emit(LoginSuccessState());
     } on FirebaseAuthException catch (e) {
-      Fluttertoast.showToast(msg: e.toString());
-      emit(LoginErrotState());
+      if (e.code == 'user-not-found') {
+        Fluttertoast.showToast(msg: 'No user found for that email.');
+        emit(LoginErrotState());
+      } else if (e.code == 'wrong-password') {
+        Fluttertoast.showToast(msg: 'Wrong password provided for that user.');
+        emit(LoginErrotState());
+      }
     }
+    //   try {
+    //     emit(LoginLoadingState());
+    //     FirebaseServicesHelper.login(email: email, password: password)
+    //         .then((value) async {
+    //       uid = value.user!.uid;
+    //       SharedPreferences prefs = await SharedPreferences.getInstance();
+    //       prefs.setString('token', uid);
+    //       // ignore: use_build_context_synchronously
+    //       // navigateAndRemove(context, const HomeLayout());
+    //     });
+    //     emit(LoginSuccessState());
+    //   } on FirebaseAuthException catch (e) {
+    //     Fluttertoast.showToast(msg: e.toString());
+    //     emit(LoginErrotState());
+    //   }
   }
 }

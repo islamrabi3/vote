@@ -86,7 +86,7 @@ class LoginScreen extends StatelessWidget {
                       ),
                       // if (state is RegisterLoadingState)
                       //   CircularProgressIndicator(),
-                      state is LoginLoadingState || state is LoginErrotState
+                      state is LoginLoadingState
                           ? const Center(child: CircularProgressIndicator())
                           : defaultButton(
                               function: () async {
